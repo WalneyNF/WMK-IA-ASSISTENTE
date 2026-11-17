@@ -1,0 +1,51 @@
+name: Testar e gerar VSIX
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar sintaxe
+        run: npm run check
+      - name: Testes automatizados
+        run: npm test
+      - name: Gerar pacote VSIX
+        run: npx --yes @vscode/vsce package --no-dependencies
+      - name: Guardar pacote instalavel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wmk-ia-assistente-vsix
+          path: '*.vsix'
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Baixar VSIX compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: wmk-ia-assistente-vsix
+      - name: Criar Release com VSIX
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${GITHUB_REF_NAME}" ./*.vsix --title "WMK IA Assistente ${GITHUB_REF_NAME}" --notes "Extensao experimental para VS Code. Baixe o VSIX e instale por Extensoes > Instalar do VSIX."
