@@ -1,6 +1,6 @@
 # Roadmap WMK IA Assistente
 
-> Projeto experimental. Versão-fonte de referência: 0.5.7 (a publicação de todos os arquivos-fonte precisa ser concluída). Nenhum item abaixo deve ser anunciado como concluído sem validação prática.
+> **Marco encerrado: WMK IA Assistente v0.6.0**, publicada no Visual Studio Marketplace sob o publicador WMK (confirmada pelo painel do autor em 17/11/2026). A versão permanece experimental. Os próximos itens são um backlog para eventual retomada; não estão prometidos para esta versão.
 
 ## Objetivo
 Assistente de desenvolvimento acessível e em português, com chat, Ollama/Groq/OpenAI, agentes, skills, ferramentas e futura integração MCP. A escolha de provedor/modelo é **global**. Cada agente escolhe skills e permissões, nunca outra chave de IA.
@@ -48,11 +48,19 @@ Assistente de desenvolvimento acessível e em português, com chat, Ollama/Groq/
 - [ ] Revisar privacidade, segurança, LICENSE e código-fonte
 - [ ] Gerar VSIX via GitHub Actions
 - [ ] Criar Release com VSIX e CHANGELOG
-- [ ] Criar publisher no Marketplace do VS Code
-- [ ] Publicar extensão estável ou pré-lançamento
+- [x] Criar publisher WMK no Marketplace do VS Code
+- [x] Publicar extensão v0.6.0 no Marketplace (versão experimental)
 - [ ] Automatizar publicação via Trusted Publishing (OIDC), se disponível
 
 ## Regra de entrega
 Cada recurso deve acompanhar: código, testes, manual HTML em pt-BR, limitações conhecidas, documentação para usuários e desenvolvedores, e instruções de atualização.
 
 Autor: Walney Moreira Klein — walneyk@hotmail.com
+
+## Registro de encerramento da v0.6.0
+
+- Chat, agentes, skills e leitura consentida do arquivo aberto demonstrados em execução real no Windows.
+- Marketplace: extensão WMK IA Assistente v0.6.0 com verificação concluída e disponibilidade pública, conforme screenshots do painel do autor.
+- Manual para iniciantes: [Curso completo](CURSO-CRIAR-EXTENSOES-VSCODE.md) e [Guia de primeira publicação](MANUAL-PRIMEIRA-EXTENSAO-MARKETPLACE.md).
+- Pendências separadas do fechamento funcional: publicação de fontes completos no GitHub e Release com VSIX. Não marcar esses itens como concluídos até serem comprovados.
+- MCP externo, Blender e agente autônomo não integram o escopo funcional entregue.
