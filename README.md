@@ -36,6 +36,8 @@ Em 17/11/2026, foi confirmado no VS Code que o WMK IA v0.6.0 enviou **201 caract
 
 **Privacidade:** ao ativar esse recurso usando Groq/OpenAI, o código anexado é enviado ao provedor. Não envie documentos sigilosos sem autorização.
 
+📥 **[Página de downloads e instalação](DOWNLOAD.md)**
+
 ## 📥 Como instalar o WMK IA
 
 ### A. Download pelo GitHub Releases
