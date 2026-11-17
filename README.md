@@ -9,9 +9,9 @@
 **Autor:** Walney Moreira Klein — walneyk@hotmail.com  
 **Versão funcional testada pelo autor no Windows:** **0.6.0** (17/11/2026)  
 **Idioma:** Português brasileiro  
-**Situação:** Projeto experimental, em evolução.
+**Situação:** v0.6.0 publicada no Visual Studio Marketplace; etapa de desenvolvimento encerrada como versão experimental de referência.
 
-> **Atenção sobre os downloads:** o repositório ainda precisa receber o código-fonte completo e um arquivo VSIX na aba Releases. Até que isso aconteça, a v0.6.0 foi confirmada no computador do autor, mas **não está comprovadamente disponível para download público pelo GitHub**. A criação do repositório e este README não publicam automaticamente a extensão.
+> **Distribuição:** a extensão v0.6.0 foi publicada no [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=WMK.wmk-ia-assistente). O GitHub Releases ainda não tinha VSIX público na última verificação. Para instalar diretamente no VS Code, use a loja.
 
 ## ✅ Funcionalidades existentes na v0.6.0
 
@@ -39,6 +39,8 @@ Em 17/11/2026, foi confirmado no VS Code que o WMK IA v0.6.0 enviou **201 caract
 **Como repetir:** abra um arquivo de testes, selecione um agente com permissão de inspeção, ative **Arquivo ativo: LIGADO**, confirme o nome do arquivo enviado e pergunte: `Explique este código e sugira melhorias sem modificar o arquivo`.
 
 **Privacidade:** ao ativar esse recurso usando Groq/OpenAI, o código anexado é enviado ao provedor. Não envie documentos sigilosos sem autorização.
+
+🌍 **[Instalar pelo Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=WMK.wmk-ia-assistente)**
 
 📥 **[Página de downloads e instalação](DOWNLOAD.md)**
 
@@ -98,6 +100,7 @@ Não confunda permissões cadastradas com execução autônoma: na v0.6.0 as fer
 ## 📚 Documentação
 
 - [Manual da v0.6.0 e testes de código](MANUAL-V060.md)
+- **[Curso completo: crie sua primeira extensão do zero](CURSO-CRIAR-EXTENSOES-VSCODE.md)**
 - [Manual completo de publicação para iniciantes](MANUAL-PRIMEIRA-EXTENSAO-MARKETPLACE.md)
 - [Como publicar no VS Code Marketplace](PUBLICAR-NO-MARKETPLACE.md)
 - [Como publicar fontes e atualizações](GUIA-PUBLICACAO.md)
