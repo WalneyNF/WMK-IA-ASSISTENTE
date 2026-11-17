@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo-wmk.jpg" alt="Logo oficial WMK IA Assistente" width="220" />
+</p>
+
 # 🤖 WMK IA Assistente — v0.6.0
 
 **Assistente de programação e documentação com IA para Visual Studio Code.** Chat lateral/ampliado, provedores configuráveis, agentes, skills, leitura de código e propostas de edição com aprovação.
@@ -94,6 +98,7 @@ Não confunda permissões cadastradas com execução autônoma: na v0.6.0 as fer
 ## 📚 Documentação
 
 - [Manual da v0.6.0 e testes de código](MANUAL-V060.md)
+- [Manual completo de publicação para iniciantes](MANUAL-PRIMEIRA-EXTENSAO-MARKETPLACE.md)
 - [Como publicar no VS Code Marketplace](PUBLICAR-NO-MARKETPLACE.md)
 - [Como publicar fontes e atualizações](GUIA-PUBLICACAO.md)
 - [Roadmap técnico](ROADMAP.md)
