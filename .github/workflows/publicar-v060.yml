@@ -1,100 +1,97 @@
-name: Publicar WMK IA v0.6.0 a partir do ZIP de fontes
+name: Publicar fontes WMK IA v0.6.0
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'publicacao/wmk-ia-assistente-v0.6.0-fontes.zip'
+    paths: ['publicacao/wmk-ia-assistente-v0.6.0-fontes.zip']
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: publicacao-wmk-v060
+  group: publicar-wmk-v060
   cancel-in-progress: false
 
 jobs:
   publicar:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar o repositorio
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: true
-
-      - name: Instalar Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Extrair e validar os fontes enviados
+      - name: Extrair fontes permitidos e validar identidade
         shell: bash
         run: |
           python3 - <<'PY'
-          import json, pathlib, zipfile, shutil
-          arquivo = pathlib.Path('publicacao/wmk-ia-assistente-v0.6.0-fontes.zip')
-          if not arquivo.is_file():
-              raise SystemExit('Falta publicacao/wmk-ia-assistente-v0.6.0-fontes.zip')
-          with zipfile.ZipFile(arquivo) as zipf:
-              nomes = zipf.namelist()
-              if 'package.json' not in nomes or 'extension.js' not in nomes:
-                  raise SystemExit('ZIP incorreto: raiz precisa conter package.json e extension.js')
-              pkg = json.loads(zipf.read('package.json'))
-              if (pkg.get('publisher','').lower(),pkg.get('name'),pkg.get('version')) != ('wmk','wmk-ia-assistente','0.6.0'):
-                  raise SystemExit('Identidade/versao incorreta no package.json')
-              for n in nomes:
-                  p = pathlib.PurePosixPath(n)
-                  if p.is_absolute() or '..' in p.parts or p.parts[0] in {'.git','node_modules','publicacao'}:
-                      raise SystemExit('Caminho nao permitido no ZIP: '+n)
-              if not any(n.startswith('assets/') for n in nomes):
-                  raise SystemExit('ZIP sem identidade visual oficial')
-              if not any(n.startswith('manuais/') for n in nomes):
-                  raise SystemExit('ZIP sem manuais')
-              for info in zipf.infolist():
-                  if info.is_dir():
+          import pathlib, zipfile, json, stat
+          archive=pathlib.Path('publicacao/wmk-ia-assistente-v0.6.0-fontes.zip')
+          if not archive.is_file(): raise SystemExit('Envie o ZIP em publicacao/')
+          required={'package.json','extension.js','stream.js','proposals.js','agent-tools.js','skills-catalog.js','default-agents.js','tool-registry.js'}
+          names={}
+          with zipfile.ZipFile(archive) as z:
+              infos=z.infolist()
+              if len(infos)>500 or sum(i.file_size for i in infos)>30*1024*1024:
+                  raise SystemExit('ZIP grande demais')
+              for info in infos:
+                  if info.is_dir(): continue
+                  raw=info.filename.replace(chr(92),'/')
+                  parts=pathlib.PurePosixPath(raw)
+                  if parts.is_absolute() or '..' in parts.parts or stat.S_ISLNK(info.external_attr>>16):
+                      raise SystemExit('Caminho inseguro: '+raw)
+                  if parts.parts[0]=='wmk-ia-assistente':
+                      name='/'.join(parts.parts[1:])
+                  else:
+                      name='/'.join(parts.parts)
+                  if not name or name in names:
+                      raise SystemExit('Nome vazio/duplicado')
+                  names[name]=info
+              if not required.issubset(names):
+                  raise SystemExit('Faltam fontes: '+str(required-set(names)))
+              pkg=json.loads(z.read(names['package.json']))
+              if (pkg.get('publisher'),pkg.get('name'),pkg.get('version'))!=('wmk-estudos','wmk-ia-assistente','0.6.0'):
+                  raise SystemExit('Publisher/name/version nao conferem com VSIX enviado')
+              extras={'LICENSE','CHANGELOG.md','CONTRIBUTING.md','.gitignore','.vscodeignore','wmk-build-helper.js','GUIA-GITHUB.md','ANALISE-TECNICA-v060.md','PUBLICAR-FONTES-DO-ZIP.ps1','WMK-PUBLICAR-FONTES.bat','COMO-ATUALIZAR-v060.txt','WMK-ATUALIZAR-v060.bat'}
+              for name,info in names.items():
+                  if name not in required|extras and not name.startswith(('media/','tests/','manuais/')):
                       continue
-                  destino = pathlib.Path(info.filename)
-                  destino.parent.mkdir(parents=True, exist_ok=True)
-                  with zipf.open(info) as origem, destino.open('wb') as saida:
-                      shutil.copyfileobj(origem, saida)
-          print('FONTES APROVADOS: WMK IA Assistente v0.6.0')
+                  if info.file_size>2*1024*1024: raise SystemExit('Arquivo individual grande: '+name)
+                  target=pathlib.Path(name)
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  target.write_bytes(z.read(info))
+          print('Fontes extraidos e identidade validada.')
           PY
-
-      - name: Validar sintaxe e testes
-        run: |
-          npm run check
-          npm test
-
-      - name: Gerar instalador oficial VSIX
+      - name: Verificar JavaScript
+        run: npm run check
+      - name: Rodar testes
+        run: npm test
+      - name: Gerar VSIX
         run: |
           npx --yes @vscode/vsce package --no-dependencies
           test -s wmk-ia-assistente-0.6.0.vsix
-
-      - name: Guardar VSIX como artifact
+      - name: Publicar VSIX como artifact
         uses: actions/upload-artifact@v4
         with:
           name: WMK-IA-Assistente-v0.6.0-VSIX
           path: wmk-ia-assistente-0.6.0.vsix
-
-      - name: Publicar codigo completo no GitHub
-        shell: bash
+          retention-days: 30
+      - name: Publicar codigo validado
         run: |
-          git config user.name "WMK GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git rm -f --cached publicacao/wmk-ia-assistente-v0.6.0-fontes.zip
-          rm -f publicacao/wmk-ia-assistente-v0.6.0-fontes.zip
-          git diff --cached --quiet || git commit -m "release: publicar fontes, logo, capa e manuais v0.6.0"
+          git config user.name 'WMK GitHub Actions'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A -- .
+          git rm -f -- publicacao/wmk-ia-assistente-v0.6.0-fontes.zip
+          git diff --cached --quiet || git commit -m 'release: publicar fontes WMK IA v0.6.0'
           git push origin HEAD:main
-
-      - name: Criar Release publica com VSIX
+      - name: Anexar VSIX ao GitHub Releases
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
         run: |
           if gh release view v0.6.0 >/dev/null 2>&1; then
             gh release upload v0.6.0 wmk-ia-assistente-0.6.0.vsix --clobber
           else
-            gh release create v0.6.0 wmk-ia-assistente-0.6.0.vsix --target "$(git rev-parse HEAD)" --title "WMK IA Assistente v0.6.0" --prerelease --notes "Versao publica experimental WMK IA Assistente. Chat com IA, agentes, skills e contexto do editor. MCP ainda e apenas catalogo."
+            gh release create v0.6.0 wmk-ia-assistente-0.6.0.vsix --target "$(git rev-parse HEAD)" --title 'WMK IA Assistente v0.6.0' --prerelease --notes 'Fontes e instalador VSIX; extensao experimental. MCP externo ainda somente catalogo.'
           fi
