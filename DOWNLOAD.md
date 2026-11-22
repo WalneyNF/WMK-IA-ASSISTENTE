@@ -2,7 +2,7 @@
 
 ## Versão de referência: v0.6.0
 
-**Estado:** v0.6.0 foi testada no Windows pelo autor. O instalador público só estará disponível quando um arquivo `.vsix` aparecer na aba Releases.
+**Estado:** código-fonte v0.6.0 recebido e validado em ambiente de análise (43 testes aprovados). A publicação dos fontes no GitHub e do VSIX no Release depende do envio do ZIP pelo mantenedor e da conclusão da automação. Não confunda workflow preparado com arquivo já publicado.
 
 ### 1. Baixar para instalar
 ➡️ **[Abrir Releases](https://github.com/WalneyNF/WMK-IA-ASSISTENTE/releases)**
@@ -23,16 +23,20 @@ Ou no terminal:
 code --install-extension ".\wmk-ia-assistente-0.6.0.vsix" --force
 ```
 
-### 3. Para desenvolvedores
+### 3. Baixar ou publicar os fontes
+
+Quando o repositório mostrar `package.json`, `extension.js`, `media/`, `tests/` e `manuais/`, os fontes estarão publicados. Nesse momento, use **Code → Download ZIP** ou `git clone` para obtê-los. Consulte [PUBLICAR-FONTES-v060.md](PUBLICAR-FONTES-v060.md) para enviar o pacote à pasta `publicacao/` e acionar a automação que valida e publica fontes/VSIX.
+
+### 4. Para desenvolvedores
 Acesse [repositório](https://github.com/WalneyNF/WMK-IA-ASSISTENTE). Para clonar e compilar, é necessário que o projeto completo, incluindo `package.json`, `extension.js`, `media/` e `tests/`, tenha sido publicado.
 
-### 4. Aviso de segurança e recursos disponíveis
+### 5. Aviso de segurança e recursos disponíveis
 - Chat, seleção de agentes, skills e contexto do arquivo ativo funcionando na v0.6.0 testada.
 - As alterações de código são propostas e devem ser revisadas/aprovadas.
 - **MCP é apenas um catálogo nesta versão:** não executa comandos em Blender ou outros servidores.
 - Chaves da Groq/OpenAI são particulares de cada usuário. Nunca as publique no repositório.
 
-### 5. Disponibilizar o VSIX (para o mantenedor)
+### 6. Disponibilizar o VSIX (para o mantenedor)
 Se o VSIX já existe no computador:
 
 1. Abra [Releases](https://github.com/WalneyNF/WMK-IA-ASSISTENTE/releases).
