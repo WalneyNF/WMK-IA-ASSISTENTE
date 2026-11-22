@@ -48,4 +48,9 @@ jobs:
       - name: Criar Release com VSIX
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "${GITHUB_REF_NAME}" ./*.vsix --title "WMK IA Assistente ${GITHUB_REF_NAME}" --notes "Extensao experimental para VS Code. Baixe o VSIX e instale por Extensoes > Instalar do VSIX."
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" ./*.vsix --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" ./*.vsix --title "WMK IA Assistente ${GITHUB_REF_NAME}" --prerelease --notes "Extensao experimental para VS Code. Baixe o VSIX e instale por Extensoes > Instalar do VSIX."
+          fi
